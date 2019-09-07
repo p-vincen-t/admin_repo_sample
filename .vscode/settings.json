@@ -1,0 +1,5 @@
+{
+    "liveSassCompile.settings.excludeList": [
+        "static/css/*[!(main)].scss"
+    ]
+}

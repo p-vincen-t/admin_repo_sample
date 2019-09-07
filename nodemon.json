@@ -1,0 +1,12 @@
+
+{
+    "watch": ["server"],
+    "ext": "js",
+    "verbose": true,
+    "ignore": [
+        "node_modules",
+        ".next",
+        "build"
+    ],
+    "exec": "yarn run start"
+  }
