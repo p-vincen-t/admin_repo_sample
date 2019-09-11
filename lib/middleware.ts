@@ -48,7 +48,7 @@ const httpMiddleware = _ => next => action => {
       headers: HTTP_ACTION.headers || [],
       body: HTTP_ACTION.body || null,
       credentials: HTTP_ACTION.credentials
-    };
+    }
 
     if (fetchOptions.body) {
       fetchOptions.body = querystring.stringify(fetchOptions.body);
@@ -56,23 +56,21 @@ const httpMiddleware = _ => next => action => {
 
     next({
       type: type + REQUESTED
-    });
+    })
 
     const workOnError = err => {
       if (HTTP_ACTION_CALLBACKS) {
         const { errorCallback } = HTTP_ACTION_CALLBACKS;
         if (errorCallback)
-          errorCallback(err).then(e => {
-            next({
-              type: type + FAILED,
-              error: e
-            });
-          });
+          errorCallback(err).then(e => next({
+            type: type + FAILED,
+            error: e
+          }))
       } else
         next({
           type: type + FAILED,
           error: err
-        });
+        })
     };
 
     fetch(endpoint, fetchOptions)
@@ -81,20 +79,19 @@ const httpMiddleware = _ => next => action => {
           const { successCallback } = HTTP_ACTION_CALLBACKS;
           if (successCallback) {
             successCallback(data)
-              .then(res => {
-                console.log("res object" + res);
-                next({
-                  type: type + RECEIVED,
-                  payload: res
-                });
-              })
-              .catch(err => workOnError(err));
+              .then(res => next({
+                type: type + RECEIVED,
+                payload: res
+              }))
+              .catch(err => workOnError(err))
           }
         } else
-          next({
-            type: type + RECEIVED,
-            payload: data
-          });
+          data.json().then(d =>
+            next({
+              type: type + RECEIVED,
+              payload: d
+            })
+          )
       })
       .catch(err => workOnError(err));
   } else return next(action);

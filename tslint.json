@@ -1,0 +1,17 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "dtslint/dtslint.json"
+    ],
+    "jsRules": {},
+    "rules": {
+        "deprecation": true,
+        "file-name-casing": false,
+        "no-empty-interface": true,
+        "no-unnecessary-callback-wrapper": true,
+        "no-unnecessary-generics": true,
+        "no-redundant-jsdoc": true,
+        "semicolon": [false, "always", "ignore-bound-class-methods"]
+    },
+    "rulesDirectory": []
+}
