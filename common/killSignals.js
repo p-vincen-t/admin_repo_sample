@@ -1,4 +1,4 @@
-const log = require('./logger');
+const log = require("./logger");
 
 const SHUTDOWN_TIMEOUT = 10e3;
 
@@ -15,30 +15,30 @@ function isShuttingDown() {
  * @param {string} signal  Signal to terminate on.
  */
 async function shutdown(signal, origin) {
-  if (typeof signal === 'string') {
+  if (typeof signal === "string") {
     log.info({
-      name: 'kill signal',
-      msg: `Handling signal: ${signal} from ${origin}.`,
+      name: "kill signal",
+      msg: `Handling signal: ${signal} from ${origin}.`
     });
   }
 
   // At the first soft kill signal, we try to shutdown the service gracefully.
-  if ((signal === 'SIGTERM' || signal === 'SIGINT') && !shuttingDown) {
+  if ((signal === "SIGTERM" || signal === "SIGINT") && !shuttingDown) {
     shuttingDown = true;
     log.info({
-      name: 'kill signal',
-      msg: `Shutdown server gracefully. ${SHUTDOWN_TIMEOUT}ms before killing it.`,
+      name: "kill signal",
+      msg: `Shutdown server gracefully. ${SHUTDOWN_TIMEOUT}ms before killing it.`
     });
     const timer = setTimeout(() => {
       log.fatal({
-        name: 'kill signal',
-        msg: 'Force shutdown',
+        name: "kill signal",
+        msg: "Force shutdown"
       });
       shutdown();
     }, SHUTDOWN_TIMEOUT);
 
     // ASC
-    const teardownsSorted = teardowns.slice().sort((a, b) => a.nice - b.nice);
+    const teardownsSorted = teardowns.slice().sort((a, b) => a.order - b.order);
 
     // Serial resolution of the teardowns
     for (let i = 0; i < teardownsSorted.length; i += 1) {
@@ -66,47 +66,45 @@ function removeTeardown(teardown) {
 function handleKillSignals() {
   //  Process on exit and signals.
   //  https://nodejs.org/api/process.html#process_event_exit
-  process.on('exit', code => {
+  process.on("exit", code => {
     const msg = `💀  Node stopped with code ${code}`;
 
     if (code === 0) {
       log.info({
-        name: 'kill signal',
-        msg,
+        name: "kill signal",
+        msg
       });
     } else {
       log.fatal({
-        name: 'kill signal',
-        msg,
+        name: "kill signal",
+        msg
       });
     }
   });
 
   // Removed 'SIGPIPE' from the list - bugz 852598.
   [
-    'SIGHUP',
-    'SIGINT',
-    'SIGQUIT',
-    'SIGILL',
-    'SIGTRAP',
-    'SIGABRT',
-    'SIGBUS',
-    'SIGFPE',
-    'SIGUSR1',
-    'SIGSEGV',
-    'SIGUSR2',
-    'SIGTERM',
+    "SIGHUP",
+    "SIGINT",
+    "SIGQUIT",
+    "SIGILL",
+    "SIGTRAP",
+    "SIGABRT",
+    "SIGBUS",
+    "SIGFPE",
+    "SIGUSR1",
+    "SIGSEGV",
+    "SIGUSR2",
+    "SIGTERM"
   ].forEach(signal => {
     process.on(signal, () => {
-      shutdown(signal, 'signal');
+      shutdown(signal, "signal");
     });
   });
 }
 
-exports = {
-  handleKillSignals,
-  isShuttingDown,
-  shutdown,
-  addTeardown,
-  removeTeardown,
-};
+exports.addTeardown = addTeardown;
+exports.handleKillSignals = handleKillSignals;
+exports.shutdown = shutdown;
+exports.removeTeardown = removeTeardown;
+exports.isShuttingDown = isShuttingDown;

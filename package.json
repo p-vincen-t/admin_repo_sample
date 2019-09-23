@@ -65,17 +65,24 @@
     "redux-thunk": "^2.3.0",
     "rxjs": "^6.5.3",
     "socket.io-client": "^2.2.0",
-    "styled-jsx": "^3.2.2",
-    "webpack": "^4.39.3",
+    "styled-jsx": "^3.2.2",    
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@babel/plugin-transform-object-assign": "^7.2.0",
     "@types/next": "^8.0.6",
     "@types/react": "^16.8.23",
     "@types/react-dom": "16.8.4",
     "@types/react-redux": "^7.1.1",
     "@types/socket.io-client": "^1.4.32",
     "babel-cli": "^6.26.0",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-optimize-clsx": "^2.4.1",
+    "babel-plugin-preval": "^3.0.1",
+    "babel-plugin-react-remove-properties": "^0.3.0",
+    "babel-plugin-transform-dev-warning": "^0.1.1",
+    "babel-plugin-transform-react-constant-elements": "^6.23.0",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
     "chalk": "^2.4.2",
@@ -85,7 +92,9 @@
     "nodemon": "^1.19.1",
     "rimraf": "^3.0.0",
     "ts-node": "^8.3.0",
-    "typescript": "^3.6.2"
+    "typescript": "^3.6.2",
+    "webpack": "^4.39.3",
+    "webpack-bundle-analyzer": "^3.5.1"
   },
   "license": "ISC",
   "peerDependencies": {

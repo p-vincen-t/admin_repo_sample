@@ -6,7 +6,6 @@ import {
   Paper,
   Theme
 } from "@material-ui/core";
-// import Avatar from '@material-ui/core/Avatar';
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import Container from "@material-ui/core/Container";
@@ -20,7 +19,6 @@ import { Component } from "react";
 import { connect } from "react-redux";
 import AuthActions from "../../lib/redux/Auth";
 import redirectTo from "../../lib/redirect";
-// import redirectTo from '../../lib/redirect';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -60,6 +58,7 @@ class LoginPage extends Component<
   {
     identifier: string;
     password: string;
+    errors: object;
   }
 > {
   static getInitialProps({ query }) {
@@ -90,11 +89,17 @@ class LoginPage extends Component<
   handleInputChange = ({ target: { name, value } }) => {
     if (name === "identifier") {
       this.setState({
-        identifier: value
+        identifier: value,
+        errors: {
+          email: false
+        }
       });
     } else
       this.setState({
-        password: value
+        password: value,
+        errors: {
+          password: false
+        }
       });
   };
 
@@ -108,7 +113,7 @@ class LoginPage extends Component<
         showSnackBar('successfully logged in, redirecting in a bit')
         setTimeout(() => {
           redirectTo(next);
-        }, 1000);
+        }, 500);
       })
     );
   };

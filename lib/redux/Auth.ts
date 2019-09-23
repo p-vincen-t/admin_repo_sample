@@ -2,6 +2,7 @@ import { AnyAction } from "redux";
 import LocalStorageStore, { DEVICE_KEY } from "../base/pref/LocalStorageStore";
 import ApiAction, { FAILED, RECEIVED, REQUESTED } from "./ApiAction";
 import CookieStore, { REFRESH_TOKEN } from "../base/pref/CookieStore";
+import { logError } from "app/common/logger";
 /**
  * auth constants
  */
@@ -121,6 +122,10 @@ const AuthActions = {
           }
         },
         {
+          errorCallback: err => new Promise((resolve, _) => {
+            logError('auth err: ', err)
+            resolve(err)
+          }),
           successCallback: res =>
             new Promise((resolve, reject) => {
               const status = res.status;
@@ -130,9 +135,7 @@ const AuthActions = {
                   successCb();
                   resolve({ user: { ...r.user, id: undefined } });
                 });
-              else if (status == 404) {
-                reject({ error: { status: 404 } });
-              } else reject({ error: { status: 403 } });
+              else reject({ error: { status } });
             })
         }
       )

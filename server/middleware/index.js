@@ -1,7 +1,5 @@
-const { logInfo } = require('../../common/logger')
 // is authenticated middleware checks if user is logged in
 exports.isAuthenticated = check => (req, res, next) => {
-    logInfo('server redirect: ', {user: req.user, check})
 
     // if user is logged in, proceed to next
     if (check) {
@@ -16,15 +14,10 @@ exports.isAuthenticated = check => (req, res, next) => {
         next()
     }
 }
-// passes the app instance to the server routes
-exports.mainAppMiddleware = app => (req, _, next) => {
-    logInfo('setting up main middleware')
-    req.app = app
-    next();
-}
+
 // csrf protection middleware
 var csurf = require('csurf')
 var csrf = csurf({
     cookie: true
 });
-module.exports.csrf = csrf
+exports.csrf = csrf

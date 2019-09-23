@@ -24,7 +24,7 @@
     "isolatedModules": true,
     "emitDecoratorMetadata": true,
     "paths": {
-      "app/*": ["./*"]
+      "common/*": ["./common*"]
     }
   },
   // "extends": "tsconfig.server.json",

@@ -1,4 +1,4 @@
-import { AES } from "crypto-js";
+import { EncryptDecrypt } from "./PrefStore";
 
 import PrefStore from "./PrefStore";
 import Registry from "../Registry";
@@ -23,7 +23,7 @@ class SessionStorageStore implements PrefStore {
    * @memberof CookieStore
    */
   put(key: string, t: any, _args: {} | undefined = undefined) {
-    let v = AES.encrypt(t, key);
+    let v = EncryptDecrypt.encrypt(key, t);
     sessionStorage.setItem(key, v);
   }
   /**
@@ -36,7 +36,7 @@ class SessionStorageStore implements PrefStore {
    */
   get(key: string, _args?: {}): any | undefined {
     let v = sessionStorage.getItem(key);
-    if (v) return AES.decrypt(v, key);
+    if (v) return EncryptDecrypt.decrypt(key, v);
     return undefined;
   }
   /**

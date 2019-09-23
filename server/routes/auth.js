@@ -112,10 +112,8 @@ module.exports = server => {
     })(req, res, next);
   });
 
-  server.post("/auth/login/verify", (req, res, next) => {});
-
   server.get("/logout", function(req, res) {
     req.logout();
-    res.redirect("/");
+    res.redirect("/auth");
   });
 };

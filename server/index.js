@@ -10,7 +10,16 @@ const setRoutes = require("./routes");
 const { csrf } = require("./middleware");
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== "production";
-const { logError } = require("../common/logger");
+const { logError, fatal, logInfo } = require("../common/logger");
+const { addTeardown } = require("../common/killSignals");
+
+// Uncaught promise bubbling up to the global scope.
+process.on("unhandledRejection", (reason, promise) => {
+  fatal({
+    name: "unhandledRejection",
+    msg: { reason, promise }
+  });
+});
 
 const onError = error => {
   logError("error booting app: ", error);
@@ -23,11 +32,11 @@ const onError = error => {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case "EACCES":
-      console.error(bind + " requires elevated privileges");
+      logError("permission error: ", bind + " requires elevated privileges");
       process.exit(1);
       break;
     case "EADDRINUSE":
-      console.error(bind + " is already in use");
+      logError("server error: ", bind + " is already in use");
       process.exit(1);
       break;
     default:
@@ -36,6 +45,10 @@ const onError = error => {
 };
 
 (async (app, onError) => {
+  addTeardown({
+    callback: () => app.close(),
+    order: 1
+  });
   try {
     await app.prepare();
     const server = express();
@@ -66,19 +79,33 @@ const onError = error => {
     server.use((err, _req, res, _next) => {
       // The error id is attached to `res.sentry` to be returned
       // and optionally displayed to the user for support.
-      logError("server route error: ", err);
+      logError("server middleware error: ", err);
       res.status(500).send({
         error: err
       });
       // res.statusCode = 500;
       // res.end(res.sentry + "\n");
     });
-    const onListening = () => {
-      console.log("Listening on " + port);
-    };
     server.on("error", onError);
     // server.on("listening", onListening);
-    server.listen(port, onListening);
+    server.listen(port, () => {
+      logInfo("Listening on " + port);
+    });
+    addTeardown({
+      callback: () => {
+        logError("http", "server is stopping");
+        return new Promise((resolve, reject) => {
+          server.close(err => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve();
+          });
+        });
+      },
+      order: 2
+    });
   } catch (e) {
     onError(e);
   }
