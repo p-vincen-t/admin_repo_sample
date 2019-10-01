@@ -14,8 +14,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import LayoutActions from "../../../../lib/redux/Layout";
-import { MenuItem } from "./MenuItem";
+import LayoutActions from "appRedux/Layout";
+import { MenuItem } from "layout/dashboard/sidebar/MenuItem";
 
 // default width of the drawer
 const drawerWidth = 240;

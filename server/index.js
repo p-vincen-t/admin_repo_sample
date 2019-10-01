@@ -1,7 +1,7 @@
 "use-strict";
 require("dotenv").config();
 const Sentry = require("@sentry/node");
-// const compression = require("compression");
+const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const express = require("express");
@@ -52,10 +52,10 @@ const onError = error => {
   try {
     await app.prepare();
     const server = express();
-    // Sentry.init({ dsn: process.env.SENTRY_DSN });
-    // server.use(Sentry.Handlers.requestHandler());
+    Sentry.init({ dsn: process.env.SENTRY_DSN });
+    server.use(Sentry.Handlers.requestHandler());
     server.use(require("helmet")());
-    // server.use(compression());
+    server.use(compression());
     server.use(require("morgan")("dev"));
     server.use(
       cors({
@@ -65,6 +65,7 @@ const onError = error => {
         optionsSuccessStatus: 200
       })
     );
+    server.use(express.static('../static'))
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
     // server.use(cookieParser());
@@ -74,7 +75,7 @@ const onError = error => {
     });
     setRoutes(server);
     server.use(csrf);
-    // server.use(Sentry.Handlers.errorHandler());
+    server.use(Sentry.Handlers.errorHandler());
     // Optional fallthrough error handler
     server.use((err, _req, res, _next) => {
       // The error id is attached to `res.sentry` to be returned

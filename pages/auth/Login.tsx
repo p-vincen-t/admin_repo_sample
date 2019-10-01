@@ -17,8 +17,8 @@ import { Email, LockOpen } from "@material-ui/icons";
 import { withStyles, WithStyles } from "@material-ui/styles";
 import { Component } from "react";
 import { connect } from "react-redux";
-import AuthActions from "../../lib/redux/Auth";
-import redirectTo from "../../lib/redirect";
+import AuthActions from "appRedux/Auth";
+import redirectTo from "lib/redirect";
 
 const styles = (theme: Theme) =>
   createStyles({

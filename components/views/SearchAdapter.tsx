@@ -1,7 +1,7 @@
-import Searchable from "../../lib/view/Searchable";
+import Searchable from "lib/view/Searchable";
 import { Component, cloneElement, ReactElement } from "react";
 import PropTypes from "prop-types";
-import { OnClickListener } from "../../lib/view/Viewable";
+import { OnClickListener } from "lib/view/Viewable";
 
 /**
  *

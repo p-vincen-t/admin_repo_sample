@@ -1,4 +1,4 @@
-import Identifiable from "../utils/Identifiable";
+import Identifiable from 'utils/Identifiable';
 
 /**
  *

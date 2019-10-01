@@ -1,9 +1,9 @@
 // import io from 'socket.io-client';
 import { Dispatch } from "redux";
 import io from "socket.io-client";
-import getDeviceName, { getDeviceDescription } from "../utils/deviceName";
+import getDeviceName, { getDeviceDescription } from "utils/deviceName";
 import Registry from "../base/Registry";
-import LocalStorageStore, { DEVICE_KEY } from "../base/pref/LocalStorageStore";
+import LocalStorageStore, { DEVICE_KEY } from "stores/LocalStorageStore";
 /**
  * handles all communications via sockets to the backend
  * 

@@ -34,7 +34,7 @@ module.exports = withPlugins(
           },
         }),
       ]);
-      if (process.env.DOCS_STATS_ENABLED) {
+      if (process.env.STATS_ENABLED) {
         plugins.push(
           // For all options see https://github.com/th0r/webpack-bundle-analyzer#as-plugin
           new BundleAnalyzerPlugin({
@@ -45,85 +45,103 @@ module.exports = withPlugins(
           }),
         );
       }
-       // next includes node_modules in webpack externals. Some of those have dependencies
-    // on the aliases defined above. If a module is an external those aliases won't be used.
-    // We need tell webpack to not consider those packages as externals.
-    if (options.isServer) {
-      const [nextExternals, ...externals] = config.externals;
+      // next includes node_modules in webpack externals. Some of those have dependencies
+      // on the aliases defined above. If a module is an external those aliases won't be used.
+      // We need tell webpack to not consider those packages as externals.
+      if (options.isServer) {
+        const [nextExternals, ...externals] = config.externals;
 
-      if (externals.length > 0) {
-        // currently not the case but other next plugins might introduce additional
-        // rules for externals. We would need to handle those in the callback
-        throw new Error('There are other externals in the webpack config.');
+        if (externals.length > 0) {
+          // currently not the case but other next plugins might introduce additional
+          // rules for externals. We would need to handle those in the callback
+          throw new Error('There are other externals in the webpack config.');
+        }
+
+        config.externals = [
+          (context, request, callback) => {
+            const hasDependencyOnRepoPackages = [
+              'notistack',
+              'material-table',
+              '@material-ui/pickers',
+            ].includes(request);
+
+            if (hasDependencyOnRepoPackages) {
+              return callback(null);
+            }
+            return nextExternals(context, request, callback);
+          },
+        ];
       }
-
-      config.externals = [
-        (context, request, callback) => {
-          const hasDependencyOnRepoPackages = [
-            'notistack',
-            'material-table',
-            '@material-ui/pickers',
-          ].includes(request);
-
-          if (hasDependencyOnRepoPackages) {
-            return callback(null);
-          }
-          return nextExternals(context, request, callback);
+      return Object.assign({}, config, {
+        plugins,
+        node: {
+          fs: 'empty',
         },
-      ];
-    }
-    return Object.assign({}, config, {
-      plugins,
-      node: {
-        fs: 'empty',
-      },
-      module: Object.assign({}, config.module, {
-        rules: config.module.rules.concat([
-          {
-            test: /\.(css|md)$/,
-            loader: 'emit-file-loader',
-            options: {
-              name: 'dist/[path][name].[ext]',
-            },
-          },
-          {
-            test: /\.(css|md)$/,
-            loader: 'raw-loader',
-          },
-          // transpile 3rd party packages with dependencies in this repository
-          {
-            test: /\.(js|mjs|jsx)$/,
-            include: /node_modules(\/|\\)(material-table|notistack|@material-ui(\/|\\)pickers)/,
-            use: {
-              loader: 'babel-loader',
+        module: Object.assign({}, config.module, {
+          rules: config.module.rules.concat([
+            {
+              test: /\.(css|md)$/,
+              loader: 'emit-file-loader',
               options: {
-                // on the server we use the transpiled commonJS build, on client ES6 modules
-                // babel needs to figure out in what context to parse the file
-                sourceType: 'unambiguous',
-                plugins: [
-                  [
-                    'babel-plugin-module-resolver',
-                    {
-                      alias: {
-                        'app': './',
-                      },
-                      transformFunctions: ['require'],
-                    },
-                  ],
-                ],
+                name: 'dist/[path][name].[ext]',
               },
             },
-          },
-          // required to transpile ../packages/
-          {
-            test: /\.(js|mjs|jsx)$/,
-            include: [workspaceRoot],
-            exclude: /node_modules/,
-            use: options.defaultLoaders.babel,
-          },
-        ]),
-      }),
-    });
+            {
+              test: /\.(css|scss)$/,
+              use: ['raw-loader', 'postcss-loader',
+                {
+                  loader: 'sass-loader', options: {
+                    includePaths: ['static/vendor']
+                  }
+                }
+              ],
+            },
+            {
+              test: /\.md$/,
+              loader: 'raw-loader',
+            },
+            // transpile 3rd party packages with dependencies in this repository
+            {
+              test: /\.(js|mjs|jsx)$/,
+              include: /node_modules(\/|\\)(material-table|notistack|@material-ui(\/|\\)pickers)/,
+              // exclude: [/node_modules/, /server/],
+              use: {
+                loader: 'babel-loader',
+                options: {
+                  // on the server we use the transpiled commonJS build, on client ES6 modules
+                  // babel needs to figure out in what context to parse the file
+                  sourceType: 'unambiguous',
+                  plugins: [
+                    [
+                      'module-resolver',
+                      {
+                        alias: {
+                          common: './common',
+                          layout: './components/layout',
+                          contexts: './lib/contexts',
+                          models: './lib/models',
+                          appRedux: './lib/redux',
+                          services: './lib/services',
+                          stores: './lib/base/pref',
+                          utils: './lib/utils',
+                          lib: './lib',
+                          pages: './pages'
+                        },
+                      },
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              test: /\.(js|mjs|jsx)$/,
+              include: [workspaceRoot],
+              exclude: /node_modules/,
+              use: options.defaultLoaders.babel,
+            },
+          ]),
+        }),
+      });
     },
     exportTrailingSlash: true,
     serverRuntimeConfig: {

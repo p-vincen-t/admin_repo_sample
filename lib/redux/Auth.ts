@@ -1,8 +1,8 @@
 import { AnyAction } from "redux";
-import LocalStorageStore, { DEVICE_KEY } from "../base/pref/LocalStorageStore";
-import ApiAction, { FAILED, RECEIVED, REQUESTED } from "./ApiAction";
-import CookieStore, { REFRESH_TOKEN } from "../base/pref/CookieStore";
-import { logError } from "app/common/logger";
+import LocalStorageStore, { DEVICE_KEY } from "stores/LocalStorageStore";
+import ApiAction, { FAILED, RECEIVED, REQUESTED } from "appRedux/ApiAction";
+import CookieStore, { REFRESH_TOKEN } from 'stores/CookieStore';
+import { logError } from 'common/logger';
 /**
  * auth constants
  */

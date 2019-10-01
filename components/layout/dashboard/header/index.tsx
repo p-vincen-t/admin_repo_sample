@@ -21,7 +21,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import clsx from "clsx";
 import { Fragment, MouseEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import LayoutActions from "../../../../lib/redux/Layout";
+import LayoutActions from "appRedux/Layout";
 import Link from "@material-ui/core/Link";
 import Popover from "@material-ui/core/Popover";
 

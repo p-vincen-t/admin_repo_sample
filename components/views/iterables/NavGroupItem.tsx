@@ -1,5 +1,5 @@
-import Identifiable from "../../../lib/utils/Identifiable";
-import Searchable from "../../../lib/view/Searchable";
+import Identifiable from "utils/Identifiable";
+import Searchable from "lib/view/Searchable";
 import { ReactElement } from "react";
 
 /**

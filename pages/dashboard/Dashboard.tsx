@@ -1,8 +1,8 @@
 import Container from '@material-ui/core/Container';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import dynamic from 'next/dynamic';
-import Header from '../../components/layout/dashboard/header';
-import SideBar from '../../components/layout/dashboard/sidebar';
+import Header from 'layout/dashboard/header';
+import SideBar from 'layout/dashboard/sidebar';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -70,8 +70,8 @@ const Dashboard = props => {
   const DynamicComponent = dynamic({
     loader: () => {
       if (n === 'inventory-catalog') {
-        return import('../../components/layout/dashboard/pages/inventory/catalog')
-      } else return import('../../components/layout/dashboard/main')
+        return import('layout/dashboard/pages/inventory/catalog')
+      } else return import('layout/dashboard/main')
     },
     loading: () => <p>Loading ...</p>
   })

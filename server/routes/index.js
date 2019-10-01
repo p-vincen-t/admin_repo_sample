@@ -6,7 +6,6 @@ const authRoutes = require('./auth')
 module.exports = server => {
 
   const robotsOptions = {
-    root: __dirname + '/static/',
     headers: {
       'Content-Type': 'text/plain;charset=UTF-8',
     }
@@ -14,7 +13,7 @@ module.exports = server => {
   server.get('/robots.txt', (req, res) => (
     res.status(200).sendFile('robots.txt', robotsOptions)
   ));
-  
+
   const sitemapOptions = {
     root: __dirname + '/static/',
     headers: {
@@ -25,7 +24,7 @@ module.exports = server => {
     res.status(200).sendFile('sitemap.xml', sitemapOptions)
   ));
 
-  authRoutes(server);  
+  authRoutes(server);
 
   server.get("/", isAuthenticated(true), Index);
 

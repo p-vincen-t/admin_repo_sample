@@ -10,7 +10,16 @@ function resolvePath(sourcePath, currentFile, opts) {
 }
 
 const alias = {
-  app: './'
+  common: './common',
+  layout: './components/layout',
+  contexts: './lib/contexts',
+  models: './lib/models',
+  appRedux: './lib/redux',
+  services: './lib/services',
+  stores: './lib/base/pref',
+  utils: './lib/utils',
+  lib: './lib',
+  pages: './pages'
 };
 
 module.exports = {
@@ -21,10 +30,10 @@ module.exports = {
     '@babel/plugin-transform-object-assign',
     'babel-plugin-preval',
     [
-      'babel-plugin-module-resolver',
+      'module-resolver',
       {
         alias,
-        transformFunctions: ['require', 'require.context'],
+        // transformFunctions: ['require', 'require.context'],
         resolvePath,
       },
     ],

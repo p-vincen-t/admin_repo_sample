@@ -24,7 +24,16 @@
     "isolatedModules": true,
     "emitDecoratorMetadata": true,
     "paths": {
-      "common/*": ["./common*"]
+      "lib/*": ["./lib/*"],
+      "common/*": ["./common/*"],
+      "layout/*": ["./components/layout/*"],
+      "contexts/*": ["./lib/contexts/*"],
+      "models/*": ["./lib/models/*"],
+      "appRedux/*": ["./lib/redux/*"],
+      "services/*": ["./lib/services/*"],
+      "stores/*": ["./lib/base/pref/*"],
+      "utils/*": ["./lib/utils/*"],      
+      "pages/*": ["./pages/*"]
     }
   },
   // "extends": "tsconfig.server.json",

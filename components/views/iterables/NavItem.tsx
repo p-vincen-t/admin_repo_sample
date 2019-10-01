@@ -1,8 +1,8 @@
-import Identifiable from "../../../lib/utils/Identifiable";
-import Searchable from "../../../lib/view/Searchable";
+import Identifiable from "utils/Identifiable";
+import Searchable from "lib/view/Searchable";
 import { ReactElement } from "react";
 // import Link from '../../Link';
-import { OnClickListener } from "../../../lib/view/Viewable";
+import { OnClickListener } from "lib/view/Viewable";
 
 export type NavProps = {
     activeClassName: string,

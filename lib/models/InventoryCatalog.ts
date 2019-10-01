@@ -1,4 +1,4 @@
-import { Upload } from "./Common";
+import { Upload } from 'models/Common';
 // quantity measure piece
 export const PIECE = "piece";
 // quantity measure box, a box can have many pieces

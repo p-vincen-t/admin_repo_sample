@@ -5,7 +5,7 @@ import {
   RECEIVED,
   FAILED,
   ApiActionOptions
-} from "./redux/ApiAction";
+} from 'appRedux/ApiAction';
 /**
  *
  * @param _
