@@ -2,7 +2,6 @@
 import { Dispatch } from "redux";
 import io from "socket.io-client";
 import getDeviceName, { getDeviceDescription } from "utils/deviceName";
-import Registry from "../base/Registry";
 import LocalStorageStore, { DEVICE_KEY } from "stores/LocalStorageStore";
 /**
  * handles all communications via sockets to the backend
@@ -10,7 +9,7 @@ import LocalStorageStore, { DEVICE_KEY } from "stores/LocalStorageStore";
  * @export
  * @class SocketService
  */
-class SocketService {
+class Service {
   /**
    *  the main socket instance for this client
    *
@@ -51,7 +50,7 @@ class SocketService {
   }
 }
 
-const initSocketService = (dispatch): SocketService => Registry.create(new SocketService(dispatch), SocketService.name)
+const initSocketService = (dispatch): Service => new Service(dispatch)
 
 export default initSocketService
 

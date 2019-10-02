@@ -1,7 +1,4 @@
-import { EncryptDecrypt } from "./PrefStore";
-
-import PrefStore from "./PrefStore";
-import Registry from "../Registry";
+import PrefStore, { EncryptDecrypt } from "stores/PrefStore";
 
 // var crypto = require('crypto');
 
@@ -13,7 +10,9 @@ import Registry from "../Registry";
  * @class CookieStore
  * @implements {PrefStore}
  */
-class SessionStorageStore implements PrefStore {
+class Store implements PrefStore {
+
+  constructor() {}
   /**
    *
    *
@@ -58,4 +57,6 @@ class SessionStorageStore implements PrefStore {
   }
 }
 
-export default Registry.of(SessionStorageStore);
+const SessionStorageStore = new Store()
+
+export default SessionStorageStore

@@ -1,13 +1,6 @@
 import { ServerStyleSheets } from "@material-ui/styles";
 import Document, { Head, Main, NextScript } from "next/document";
 
-// You can find a benchmark of the available CSS minifiers under
-// https://github.com/GoalSmashers/css-minification-benchmark
-// We have found that clean-css is faster than cssnano but the output is larger.
-// Waiting for https://github.com/cssinjs/jss/issues/279
-// 4% slower but 12% smaller output than doing it in a single step.
-//
-// It's using .browserslistrc
 let prefixer;
 let cleanCSS;
 if (process.env.NODE_ENV === "production") {
@@ -36,13 +29,13 @@ class MyDocument extends Document<{
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
           <link rel="shortcut icon" href="/static/favicon.ico" />
-          <link rel="manifest" href="/static/manifest.json" />
-          <meta
+          {/* <link rel="manifest" href="/static/manifest.json" /> */}
+          {/* <meta
             name="theme-color"
             content={
               this.props.pageContext ? this.props.pageContext.theme.palette.primary.main : null
             }
-          />
+          /> */}
           <link href="https://fonts.gstatic.com" rel="preconnect" crossOrigin="anonymous" />
           <link
             rel="stylesheet"

@@ -1,8 +1,5 @@
 import cookie from "js-cookie";
-import { EncryptDecrypt } from "./PrefStore";
-
-import PrefStore from "./PrefStore";
-import Registry from "../Registry";
+import PrefStore, { EncryptDecrypt } from "stores/PrefStore";
 export const REFRESH_TOKEN = "sess_id";
 // var crypto = require('crypto');
 
@@ -14,7 +11,8 @@ export const REFRESH_TOKEN = "sess_id";
  * @class CookieStore
  * @implements {PrefStore}
  */
-class CookieStore implements PrefStore {
+class Store implements PrefStore {
+
   /**
    *
    *
@@ -73,4 +71,6 @@ class CookieStore implements PrefStore {
   }
 }
 
-export default Registry.of(CookieStore);
+const CookieStore = new Store()
+
+export default CookieStore

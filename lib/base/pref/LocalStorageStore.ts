@@ -1,7 +1,6 @@
 // import { AES } from "crypto-js";
 import { EncryptDecrypt } from 'stores/PrefStore'
 import PrefStore from "stores/PrefStore";
-import Registry from "lib/base/Registry";
 export const DEVICE_KEY = "xrd_id";
 // var crypto = require('crypto');
 
@@ -13,7 +12,12 @@ export const DEVICE_KEY = "xrd_id";
  * @class CookieStore
  * @implements {PrefStore}
  */
-class LocalStorageStore implements PrefStore {
+class Store implements PrefStore {
+  /**
+   *Creates an instance of LocalStorageStore.
+   * @memberof LocalStorageStore
+   */
+  constructor(){}
   /**
    *
    *
@@ -58,4 +62,6 @@ class LocalStorageStore implements PrefStore {
   }
 }
 
-export default Registry.of(LocalStorageStore);
+const LocalStoreStore = new Store()
+
+export default LocalStoreStore
