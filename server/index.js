@@ -1,7 +1,6 @@
 "use-strict";
 require("dotenv").config();
 const Sentry = require("@sentry/node");
-const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const express = require("express");
@@ -22,7 +21,6 @@ process.on("unhandledRejection", (reason, promise) => {
 });
 
 const onError = error => {
-  logError("error booting app: ", error);
   if (error.syscall !== "listen") {
     throw error;
   }
@@ -55,7 +53,6 @@ const onError = error => {
     Sentry.init({ dsn: process.env.SENTRY_DSN });
     server.use(Sentry.Handlers.requestHandler());
     server.use(require("helmet")());
-    server.use(compression());
     server.use(require("morgan")("dev"));
     server.use(
       cors({
@@ -78,17 +75,12 @@ const onError = error => {
     server.use(Sentry.Handlers.errorHandler());
     // Optional fallthrough error handler
     server.use((err, _req, res, _next) => {
-      // The error id is attached to `res.sentry` to be returned
-      // and optionally displayed to the user for support.
       logError("server middleware error: ", err);
       res.status(500).send({
         error: err
       });
-      // res.statusCode = 500;
-      // res.end(res.sentry + "\n");
     });
     server.on("error", onError);
-    // server.on("listening", onListening);
     server.listen(port, () => {
       logInfo("Listening on " + port);
     });

@@ -1,19 +1,37 @@
 // import crypto from "crypto"
 
+let cipher = salt => {
+  let textToChars = text => text.split('').map(c => c.charCodeAt(0))
+  let byteHex = n => ("0" + Number(n).toString(16)).substr(-2)
+  let applySaltToChar = code => textToChars(salt).reduce((a,b) => a ^ b, code)    
+
+  return text => text.split('')
+      .map(textToChars)
+      .map(applySaltToChar)
+      .map(byteHex)
+      .join('')
+}
+
+let decipher = salt => {
+  let textToChars = text => text.split('').map(c => c.charCodeAt(0))
+  // let saltChars = textToChars(salt)
+  let applySaltToChar = code => textToChars(salt).reduce((a,b) => a ^ b, code)
+  return encoded => encoded.match(/.{1,2}/g)
+      .map(hex => parseInt(hex, 16))
+      .map(applySaltToChar)
+      .map(charCode => String.fromCharCode(charCode))
+      .join('')
+}
 export const EncryptDecrypt = {
-  encrypt: (key, data): string => {
-    // let cipher = crypto.createCipher('aes-256-cbc', key);
-    // let crypted = cipher.update(data, 'utf8', 'hex');
-    // crypted += cipher.final('hex');
-    // return crypted;
-    return key + data
+  encrypt: (key, data): string => {    
+    let cip = cipher(key);
+    return cip(data);
+    //return key + data
   },
   decrypt: (key, encrypted_data): string => {
-    // let decipher = crypto.createDecipher('aes-256-cbc', key);
-    // var decrypted = decipher.update(encrypted_data, 'hex', 'utf8');
-    // decrypted += decipher.final('utf8');
-    // return decrypted;
-    return key + encrypted_data
+    let deci = decipher(key);
+    return deci(encrypted_data);
+    //return key + encrypted_data
   }
 }
 

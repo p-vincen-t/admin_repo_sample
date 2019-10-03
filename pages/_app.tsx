@@ -1,22 +1,22 @@
 // import { jssPreset, StylesProvider } from "@material-ui/styles";
 import acceptLanguage from "accept-language";
 import { ThemeProvider } from "contexts/ThemeContext";
-
 // import { create } from "jss";
 // import rtl from "jss-rtl";
-import { initSocketService } from "lib/services";
+
 import serviceWorker from "lib/serviceWorker";
-import Store from "lib/store";
+// import Store from "lib/store";
 import withAppHoc from "lib/with-app-hoc";
-import withRedux from "next-redux-wrapper";
+// import withRedux from "next-redux-wrapper";
 import App from "next/app";
 import Head from "next/head";
 import Router from "next/router";
 import Nprogress from "nprogress";
 import { ComponentType, Fragment, StrictMode, useEffect } from "react";
-import { Provider } from "react-redux";
+// import { Provider } from "react-redux";
 // import { PersistGate } from "redux-persist/lib/integration/react";
 import loadScript from "utils/loadScript";
+
 
 
 // // Configure JSS
@@ -98,21 +98,18 @@ function loadDependencies() {
 }
 
 const Wrapper = props => {
-  const { children, store, title } = props;
+  const { children, title } = props;
 
   useEffect(() => {
     loadDependencies();
     registerServiceWorker();
-
     const jssStyles = document.querySelector("#jss-server-side");
     if (jssStyles && jssStyles.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles);
     }
-
     Router.events.on("routeChangeStart", _ => Nprogress.start());
     Router.events.on("routeChangeComplete", _ => Nprogress.stop());
     Router.events.on("routeChangeError", _ => Nprogress.stop());
-    initSocketService(store.dispatch);
   }, []);
 
   return (
@@ -120,14 +117,17 @@ const Wrapper = props => {
       <Head>
         <title>{title ? `Nesst | ${title}` : "Nesst"}</title>
       </Head>
-      <Provider store={store}>
       <ThemeProvider>
-            {children}
-            </ThemeProvider>
+        {children}
+      </ThemeProvider>
+      {/* <Provider store={store}>
+        <PersistGate persistor={store.__PERSISTOR} loading={null}>
+          
+        </PersistGate> */}
       {/* <StylesProvider jss={jss}>
                         
           </StylesProvider> */}
-        {/* <PersistGate persistor={store.__PERSISTOR} loading={null}>
+      {/* <PersistGate persistor={store.__PERSISTOR} loading={null}>
           <StylesProvider jss={jss}>
             <ThemeProvider>
             {children}
@@ -148,7 +148,7 @@ const Wrapper = props => {
             </MuiThemeProvider>
           </JssProvider> 
         </PersistGate> */}
-      </Provider>
+      {/* </Provider> */}
     </ReactMode>
   );
 };
@@ -162,11 +162,11 @@ class Application extends App<{
 }> {
 
   render() {
-    const { Component, pageProps, showSnackBar, store } = this.props;
+    const { Component, pageProps, showSnackBar } = this.props;
     const { title } = pageProps;
     return (
-      <Wrapper store={store} title={title} >
-        <Component  showSnackBar={showSnackBar} {...pageProps} />
+      <Wrapper title={title} >
+        <Component showSnackBar={showSnackBar} {...pageProps} />
       </Wrapper>
     );
   }
@@ -178,4 +178,4 @@ Application.getInitialProps = async ({ Component, ctx }) => {
   return { pageProps };
 };
 
-export default withRedux(Store)(withAppHoc(Application));
+export default withAppHoc(Application);
