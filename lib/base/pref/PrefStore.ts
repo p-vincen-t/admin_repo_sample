@@ -1,19 +1,19 @@
-import crypto from "crypto"
+// import crypto from "crypto"
 
 export const EncryptDecrypt = {
   encrypt: (key, data): string => {
-    let cipher = crypto.createCipher('aes-256-cbc', key);
-    let crypted = cipher.update(data, 'utf8', 'hex');
-    crypted += cipher.final('hex');
-    return crypted;
-    //return key + data
+    // let cipher = crypto.createCipher('aes-256-cbc', key);
+    // let crypted = cipher.update(data, 'utf8', 'hex');
+    // crypted += cipher.final('hex');
+    // return crypted;
+    return key + data
   },
   decrypt: (key, encrypted_data): string => {
-    let decipher = crypto.createDecipher('aes-256-cbc', key);
-    var decrypted = decipher.update(encrypted_data, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-    //return key + encrypted_data
+    // let decipher = crypto.createDecipher('aes-256-cbc', key);
+    // var decrypted = decipher.update(encrypted_data, 'hex', 'utf8');
+    // decrypted += decipher.final('utf8');
+    // return decrypted;
+    return key + encrypted_data
   }
 }
 

@@ -90,6 +90,7 @@ MyDocument.getInitialProps = async ctx => {
     ...initialProps,
     // Styles fragment is rendered after the app and page rendering finish.
     lang: ctx.query.userLanguage || "en",
+    
     styles: (
       <style
         id="jss-server-side"

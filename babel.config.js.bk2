@@ -26,14 +26,14 @@ module.exports = {
   presets: [
     "next/babel",
     "@zeit/next-typescript/babel",
-    [
-      "@babel/preset-env",
-      {
-        targets: {
-          browsers: ["last 2 versions", "safari >= 7"]
-        }
-      }
-    ]
+    // [
+    //   "@babel/preset-env",
+    //   {
+    //     targets: {
+    //       browsers: ["last 2 versions", "safari >= 7"]
+    //     }
+    //   }
+    // ]
   ],
   plugins: [
     // "@babel/plugin-syntax-dynamic-import",
@@ -57,7 +57,7 @@ module.exports = {
       }
     ]
   ],
-  ignore: [/@babel[\/\\]runtime/], // Fix a Windows issue.
+  // ignore: [/@babel[\/\\]runtime/], // Fix a Windows issue.
   env: {
     production: {
       plugins: [
