@@ -1,29 +1,18 @@
-// import { jssPreset, StylesProvider } from "@material-ui/styles";
 import acceptLanguage from "accept-language";
+import { NotificationProvider } from "contexts/NotificationContext";
+import { SocketProvider } from "contexts/SocketContext";
 import { ThemeProvider } from "contexts/ThemeContext";
-// import { create } from "jss";
-// import rtl from "jss-rtl";
-
 import serviceWorker from "lib/serviceWorker";
-// import Store from "lib/store";
-import withAppHoc from "lib/with-app-hoc";
-// import withRedux from "next-redux-wrapper";
+import Store from "lib/store";
 import App from "next/app";
 import Head from "next/head";
 import Router from "next/router";
 import Nprogress from "nprogress";
-import { ComponentType, Fragment, StrictMode, useEffect } from "react";
-// import { Provider } from "react-redux";
-// import { PersistGate } from "redux-persist/lib/integration/react";
+import { Fragment, StrictMode } from "react";
+import { Provider } from "react-redux";
+// import { PersistGate } from "redux-persist/integration/react";
 import loadScript from "utils/loadScript";
 
-
-
-// // Configure JSS
-// const jss = create({
-//   plugins: [...jssPreset().plugins, rtl()],
-//   insertionPoint: process.browser ? document.querySelector("#insertion-point-jss") : null
-// });
 
 acceptLanguage.languages(["en"]);
 
@@ -97,10 +86,15 @@ function loadDependencies() {
   loadScript("https://www.google-analytics.com/analytics.js", document.querySelector("head"));
 }
 
-const Wrapper = props => {
-  const { children, title } = props;
+class Application extends App {
+  store;
+  constructor(props) {
+    super(props);
 
-  useEffect(() => {
+    this.store = Store(props.initialReduxState);
+  }
+
+  componentDidMount() {
     loadDependencies();
     registerServiceWorker();
     const jssStyles = document.querySelector("#jss-server-side");
@@ -110,72 +104,48 @@ const Wrapper = props => {
     Router.events.on("routeChangeStart", _ => Nprogress.start());
     Router.events.on("routeChangeComplete", _ => Nprogress.stop());
     Router.events.on("routeChangeError", _ => Nprogress.stop());
-  }, []);
-
-  return (
-    <ReactMode>
-      <Head>
-        <title>{title ? `Nesst | ${title}` : "Nesst"}</title>
-      </Head>
-      <ThemeProvider>
-        {children}
-      </ThemeProvider>
-      {/* <Provider store={store}>
-        <PersistGate persistor={store.__PERSISTOR} loading={null}>
-          
-        </PersistGate> */}
-      {/* <StylesProvider jss={jss}>
-                        
-          </StylesProvider> */}
-      {/* <PersistGate persistor={store.__PERSISTOR} loading={null}>
-          <StylesProvider jss={jss}>
-            <ThemeProvider>
-            {children}
-            </ThemeProvider>            
-          </StylesProvider>
-
-          <JssProvider
-            registry={this.pageContext.sheetsRegistry}
-            generateClassName={this.pageContext.generateClassName}
-            sheetsManager={this.pageContext.sheetsManager}>
-            <MuiThemeProvider theme={this.pageContext.theme}>
-              <CssBaseline />
-              <Nprogress />
-              <Component
-                pageContext={this.pageContext}
-                showSnackBar={showSnackBar}
-                {...pageProps} />
-            </MuiThemeProvider>
-          </JssProvider> 
-        </PersistGate> */}
-      {/* </Provider> */}
-    </ReactMode>
-  );
-};
-
-class Application extends App<{
-  store: any;
-  showSnackBar;
-  Component: ComponentType<{}>;
-  metaRedirect?: boolean;
-  destination?: string;
-}> {
+  }
 
   render() {
-    const { Component, pageProps, showSnackBar } = this.props;
+    const { Component, pageProps } = this.props;
     const { title } = pageProps;
     return (
-      <Wrapper title={title} >
-        <Component showSnackBar={showSnackBar} {...pageProps} />
-      </Wrapper>
+      <ReactMode>
+        <Head>
+          <title>{title ? `Nesst | ${title}` : "Nesst"}</title>
+        </Head>
+        <Provider store={this.store}>
+          <ThemeProvider>
+            <SocketProvider store={this.store}>
+              <NotificationProvider>
+                <Component {...pageProps} />
+              </NotificationProvider>
+            </SocketProvider>
+          </ThemeProvider>
+          {/* <PersistGate persistor={this.store.__PERSISTOR} loading={<div/>}>
+            <ThemeProvider>
+              <SocketProvider store={this.store}>
+                <NotificationProvider >
+                  <Component {...pageProps} />
+                </NotificationProvider>
+              </SocketProvider>
+            </ThemeProvider>
+          </PersistGate> */}
+        </Provider>
+      </ReactMode>
     );
   }
 }
 
 Application.getInitialProps = async ({ Component, ctx }) => {
+  // Always make a new store if server, otherwise state is shared between requests
+  // Get or Create the store with `undefined` as initialState
+  // This allows you to set a custom default initialState
+  const reduxStore = Store();
+
   let pageProps = {};
   if (Component.getInitialProps) pageProps = await Component.getInitialProps(ctx);
-  return { pageProps };
+  return { pageProps, initialReduxState: reduxStore.getState() };
 };
 
-export default withAppHoc(Application);
+export default Application;

@@ -59,7 +59,7 @@ module.exports = withPlugins(
       alias['pages'] = path.join(__dirname, 'pages')
 
       return Object.assign({}, config, {
-        plugins,
+        // plugins,
         node: {
           fs: 'empty',
         },
@@ -75,7 +75,7 @@ module.exports = withPlugins(
     },
     publicRuntimeConfig: {
       // Will be available on both server and client
-      API_URL: process.env.API_URL
+      VERSION: JSON.stringify(pkg.version),
     },
 
     onDemandEntries: {

@@ -9,11 +9,10 @@ import Typography from "@material-ui/core/Typography";
 import { Email, LockOpen } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/styles";
 import AuthActions from "appRedux/Auth";
+import { useNotification } from "contexts/NotificationContext";
 import redirectTo from "lib/redirect";
-import { withRedux } from 'lib/withRedux';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,28 +38,20 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// interface Props extends WithStyles<typeof styles> {
-//   next;
-//   showSnackBar;
-//   dispatch;
-//   loggedIn;
-//   errors?;
-//   message?;
-//   loading?;
-// }
-
 const LoginPage = props => {
 
-  const [identifier, setIdentifier] =  useState('')
+  const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
+
+  const { showNotification } = useNotification()
   // const [showPassword, setShowPassword] = useState(false)
- 
-  const [{passwordError, identifierError}, loading] = useSelector(
-    ({ auth: { errors: {passwordError, identifierError }, loading } }: any) => [
+
+  const [{ passwordError, identifierError }, loading] = useSelector(
+    ({ auth: { errors: { passwordError, identifierError }, loading } }: any) => [
       {
         passwordError: passwordError || false,
         identifierError: identifierError || false
-      },      
+      },
       loading
     ]
   );
@@ -68,7 +59,7 @@ const LoginPage = props => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(AuthActions.setLoggedIntoFalse());    
+    dispatch(AuthActions.setLoggedIntoFalse());
   }, [])
 
   const handleInputChange = ({ target: { name, value } }) => {
@@ -89,17 +80,17 @@ const LoginPage = props => {
       //   }
       // });
     }
-     
+
   };
 
   const onSubmit = (e: { preventDefault: () => void }) => {
-    const { next, showSnackBar } = props;
+    const { next } = props;
     // showSnackBar(' logging in', 20000)
     // return
     e.preventDefault();
     dispatch(
       AuthActions.login(identifier, password, () => {
-        showSnackBar('successfully logged in, redirecting in a bit')
+        showNotification('successfully logged in, redirecting in a bit')
         setTimeout(() => {
           redirectTo(next);
         }, 500);
@@ -108,6 +99,7 @@ const LoginPage = props => {
   };
 
   const classes = useStyles(props);
+
   const { message } = props;
 
   return (
@@ -122,8 +114,8 @@ const LoginPage = props => {
             {message}
           </Typography>
         ) : (
-          ""
-        )}
+            ""
+          )}
         <Typography component="h3" variant="h5">
           Sign In
         </Typography>
@@ -158,8 +150,8 @@ const LoginPage = props => {
                 {identifierError}
               </FormHelperText>
             ) : (
-              ""
-            )}
+                ""
+              )}
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <TextField
@@ -188,8 +180,8 @@ const LoginPage = props => {
                 {passwordError}
               </FormHelperText>
             ) : (
-              ""
-            )}
+                ""
+              )}
           </FormControl>
 
           <FormControlLabel
@@ -201,17 +193,16 @@ const LoginPage = props => {
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
-          >
+            className={classes.submit}>
             Sign In
-          </Button>
+          </Button>          
         </form>
       </Paper>
     </Container>
   );
 }
 
-LoginPage.getInitialProps = ({query}) => {
+LoginPage.getInitialProps = ({ query }) => {
   let props = {
     title: "Login",
     next: ""
@@ -221,4 +212,4 @@ LoginPage.getInitialProps = ({query}) => {
   return props;
 }
 
-export default withRedux(LoginPage);
+export default LoginPage;

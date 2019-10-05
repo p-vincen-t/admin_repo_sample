@@ -8,7 +8,7 @@ export const LayoutConstants = {
 
 export const LayoutReducer = (
   state = {
-    sidebar: true,
+    sidebar: false,
     theme: "default",
     sideMenuItems: [
       { key: "1", name: "Dashboard", url: "/" },

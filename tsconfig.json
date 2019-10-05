@@ -22,7 +22,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "emitDecoratorMetadata": true,    
+    "emitDecoratorMetadata": true,
     "paths": {
       "lib/*": ["lib/*"],
       "lib": ["lib"],
@@ -40,14 +40,18 @@
       "services": ["lib/services"],
       "stores/*": ["lib/base/pref/*"],
       "stores": ["lib/base/pref"],
-      "utils/*": ["lib/utils/*"], 
-      "utils": ["lib/utils"],           
+      "utils/*": ["lib/utils/*"],
+      "utils": ["lib/utils"],
       "pages/*": ["pages/*"],
       "pages": ["pages"]
     }
   },
   // "extends": "tsconfig.server.json",
   "exclude": ["node_modules", "types", "build", ".next", "server"],
- 
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx", "lib/contexts/hooks/useFetch.js", "components/layout/dashboard/header/index.jsx"
+  ]
 }

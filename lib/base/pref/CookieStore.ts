@@ -1,6 +1,8 @@
 import cookie from "js-cookie";
-import PrefStore, { EncryptDecrypt } from "stores/PrefStore";
-export const REFRESH_TOKEN = "sess_id";
+import PrefStore from "stores/PrefStore";
+import { EncryptDecrypt } from 'common/crypt'
+export const REFRESH_TOKEN = "r_sess_id";
+export const USER = "sess";
 // var crypto = require('crypto');
 
 // const md5 = data => crypto.createHash('md5').update(data).digest("hex");

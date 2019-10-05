@@ -1,33 +1,40 @@
+import Button from "@material-ui/core/Button";
 import Collapse from "@material-ui/core/Collapse";
 // import Container from "@material-ui/core/Container";
 import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
-import IconButton from "@material-ui/core/IconButton";
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import Link from "@material-ui/core/Link";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import MenuIcon from "@material-ui/icons/Menu";
-import clsx from "clsx";
-import { Fragment, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import LayoutActions from "appRedux/Layout";
+import { useChangeTheme } from "contexts/ThemeContext";
 import { MenuItem } from "layout/dashboard/sidebar/MenuItem";
+import { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 // default width of the drawer
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     rootMenu: {
+      marginTop: theme.spacing(6),
       display: "flex",
-      flexDirection: "column"
+      flexDirection: "column",
+      height: "100%",
+      overflowY: "hidden",
+      overflowX: "hidden"
     },
-    spacer: {
-      flex: 1
+    options: {
+      display: "flex",
+      padding: theme.spacing(1)
+    },
+    space: {
+      flexGrow: 1
     },
     list: {
       width: drawerWidth
@@ -37,13 +44,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     menuHeader: {
       paddingLeft: "30px"
-    },
-    toolbarIcon: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "flex-end",
-      padding: "0 8px",
-      ...theme.mixins.toolbar
     },
     drawerPaper: {
       position: "relative",
@@ -64,7 +64,13 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up("sm")]: {
         width: theme.spacing(9)
       }
-    }
+    },
+    button: {
+      margin: theme.spacing(1),
+    },
+    input: {
+      display: 'none',
+    },
   })
 );
 /**
@@ -82,22 +88,26 @@ const SideBar = props => {
       currentSelectedMenuKey
     ]
   );
+
+  const [theme, setTheme] = useState(null)
+
+  const [dir, setDir] = useState(null)
+
+  const changeTheme = useChangeTheme()
+
+  useEffect(() => {
+    if (theme !== null) changeTheme({ theme })
+  }, [theme])
+
+  useEffect(() => {
+    if (dir !== null) changeTheme({ dir })
+  }, [dir])
+
   // maps classes to component
   const classes = useStyles(props);
 
   const dispatch = useDispatch();
-  // hides the drawer
-  const handleDrawerClose = () => {
-    dispatch(LayoutActions.showSideBar(false));
-  };
-  // // handles them change
-  // const handleThemeChange = () => {
-  //   dispatch(LayoutActions.changeTheme("red"));
-  // };
-  // opens the drawer
-  const handleDrawerOpen = () => {
-    dispatch(LayoutActions.showSideBar(true));
-  };
+
   // changes current selected menu
   const handleMenuClick = menuKey => {
     dispatch(LayoutActions.changeCurrentSelectedMenuKey(menuKey));
@@ -108,6 +118,14 @@ const SideBar = props => {
       if (child.key === current) return true
     });
     return false
+  }
+
+  const handleOnOpenCloseDrawer = open => event => {
+    if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift' || open === true)) {
+      return;
+    }
+
+    dispatch(LayoutActions.showSideBar(open))
   }
 
   const [collaped, setCollapsed] = useState(!checkSelectedKeyInGroup(sideMenuItems, currentSelectedMenuKey));
@@ -144,42 +162,34 @@ const SideBar = props => {
   })
 
   return (
-    <Drawer
-      variant="permanent"
+    <SwipeableDrawer
       classes={{
-        paper: clsx(classes.drawerPaper, !sidebar && classes.drawerPaperClose)
+        paper: classes.drawerPaper
       }}
+      onOpen={handleOnOpenCloseDrawer(true)}
+      onClose={handleOnOpenCloseDrawer(false)}
       open={sidebar}>
-      <div className={classes.toolbarIcon}>
-        {sidebar ? (
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        ) : (
-            <IconButton onClick={handleDrawerOpen}>
-              <MenuIcon />
-            </IconButton>
-          )}
-      </div>
       <div className={classes.rootMenu}>
         <Divider />
-        <List>{handler(sideMenuItems, classes)}</List>
-        {/* <Divider /> */}
-        {/* <List>{secondaryListItems}</List> */}
-        {/* <Container className={classes.spacer} /> */}
-        {/* <div
-          style={{
-            alignSelf: "center"
-          }}>
-          <Button
-            variant="contained"
-            onClick={handleThemeChange}
-            color="inherit">
-            Red Theme
+        <List className={classes.list}>
+          {handler(sideMenuItems, classes)}
+        </List>
+        <div className={classes.space} />
+        <Divider />
+        <div className={classes.options}>
+          <ButtonGroup fullWidth aria-label="full width outlined button group">
+            <Button
+              onClick={() => setTheme(theme === 'red' ? 'default' : 'red')}>
+              theme
           </Button>
-        </div> */}
+            <Button
+              onClick={() => setDir(dir === 'ltr' ? 'rtl' : 'ltr')}>
+              direction
+          </Button>
+          </ButtonGroup>
+        </div>
       </div>
-    </Drawer>
+    </SwipeableDrawer>
   );
 };
 

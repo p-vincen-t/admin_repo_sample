@@ -1,11 +1,6 @@
-import querystring from "querystring";
-import {
-  HTTP_ACTION,
-  REQUESTED,
-  RECEIVED,
-  FAILED,
-  ApiActionOptions
-} from 'appRedux/ApiAction';
+import { FAILED, HTTP_ACTION, RECEIVED, REQUESTED } from "appRedux/ApiAction";
+import request, { ApiMetaData, REQUEST_FAILED, REQUEST_STARTED, REQUEST_SUCCESS } from "common/fetch";
+
 /**
  *
  * @param _
@@ -39,66 +34,36 @@ function isPromise(v) {
  *
  * @param _
  */
+
 const httpMiddleware = _ => next => action => {
   if (action[HTTP_ACTION]) {
     const { HTTP_ACTION, endpoint, type, HTTP_ACTION_CALLBACKS } = action;
 
-    let fetchOptions: ApiActionOptions = {
+    let fetchData: ApiMetaData = {
       method: HTTP_ACTION.method,
       headers: HTTP_ACTION.headers || [],
       body: HTTP_ACTION.body || null,
       credentials: HTTP_ACTION.credentials
     };
 
-    if (fetchOptions.body) {
-      fetchOptions.body = querystring.stringify(fetchOptions.body);
-    }
-
-    next({
-      type: type + REQUESTED
-    });
-
-    const workOnError = err => {
-      if (HTTP_ACTION_CALLBACKS) {
-        const { errorCallback } = HTTP_ACTION_CALLBACKS;
-        if (errorCallback)
-          errorCallback(err).then(e =>
-            next({
-              type: type + FAILED,
-              error: e
-            })
-          );
-      } else
+   request(endpoint, fetchData, HTTP_ACTION_CALLBACKS, (status, data) => {
+      if (status === REQUEST_STARTED)
+        next({
+          type: type + REQUESTED
+        });
+      else if (status === REQUEST_SUCCESS)
+        next({
+          type: type + RECEIVED,
+          payload: data
+        });
+      else if (status === REQUEST_FAILED)
         next({
           type: type + FAILED,
-          error: err
+          error: data
         });
-    };
-
-    fetch(endpoint, fetchOptions)
-      .then(data => {
-        if (HTTP_ACTION_CALLBACKS) {
-          const { successCallback } = HTTP_ACTION_CALLBACKS;
-          if (successCallback) {
-            successCallback(data)
-              .then(res =>
-                next({
-                  type: type + RECEIVED,
-                  payload: res
-                })
-              )
-              .catch(err => workOnError(err));
-          }
-        } else
-          data.json().then(d =>
-            next({
-              type: type + RECEIVED,
-              payload: d
-            })
-          );
-      })
-      .catch(err => workOnError(err));
+    });
   } else return next(action);
 };
 
 export { promiseMiddleware, httpMiddleware };
+

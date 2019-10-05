@@ -1,4 +1,7 @@
-import PrefStore, { EncryptDecrypt } from "stores/PrefStore";
+import PrefStore from "stores/PrefStore";
+import { EncryptDecrypt } from 'common/crypt'
+
+export const CURRENT_PAGE = 'pages_current'
 
 // var crypto = require('crypto');
 

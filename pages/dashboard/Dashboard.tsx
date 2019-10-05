@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import dynamic from 'next/dynamic';
 import Header from 'layout/dashboard/header';
 import SideBar from 'layout/dashboard/sidebar';
+import { SessionProvider } from 'contexts/SessionContext'
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -12,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     padding: theme.spacing(2, 4, 2, 4),
   },
   appBarSpacer: theme.mixins.toolbar,
+  
   content: {
     flexGrow: 1,
     height: '100vh',
@@ -84,12 +86,13 @@ const Dashboard = props => {
   // })
 
   return (
-    <div className={classes.root}>
-      <Header />
-      <SideBar />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        {/* <div className={classes.rootBreadCrumb}>
+    <SessionProvider>
+      <div className={classes.root}>
+        <Header />
+        <SideBar />
+        <main className={classes.content}>
+          <div className={classes.appBarSpacer} />
+          {/* <div className={classes.rootBreadCrumb}>
             <Breadcrumbs aria-label="breadcrumb" component={StyledBreadcrumb}>
               <StyledBreadcrumb
                   component="a"
@@ -109,13 +112,13 @@ const Dashboard = props => {
                   onDelete={handleClick} component="a"/>
             </Breadcrumbs>
           </div> */}
-        <hr className={classes.hr} />
-        <Container maxWidth="lg" className={classes.container}>
-          <DynamicComponent className={classes.mainContent} />
-          <div className={classes.mainFooter} />
-        </Container>
-      </main>
-    </div>
+          <Container maxWidth="lg" className={classes.container}>
+            <DynamicComponent className={classes.mainContent} />
+            <div className={classes.mainFooter} />
+          </Container>
+        </main>
+      </div>
+    </SessionProvider>
   );
 }
 

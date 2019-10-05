@@ -1,6 +1,5 @@
-// import { AES } from "crypto-js";
-import { EncryptDecrypt } from 'stores/PrefStore'
 import PrefStore from "stores/PrefStore";
+import { EncryptDecrypt } from 'common/crypt'
 export const DEVICE_KEY = "xrd_id";
 // var crypto = require('crypto');
 

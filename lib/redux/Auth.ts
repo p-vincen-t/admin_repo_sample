@@ -1,8 +1,7 @@
-import { AnyAction } from "redux";
-import LocalStorageStore, { DEVICE_KEY } from "stores/LocalStorageStore";
 import ApiAction, { FAILED, RECEIVED, REQUESTED } from "appRedux/ApiAction";
-import CookieStore, { REFRESH_TOKEN } from 'stores/CookieStore';
-import { logError } from 'common/logger';
+import { AnyAction } from "redux";
+import CookieStore, { REFRESH_TOKEN, USER } from 'stores/CookieStore';
+import LocalStorageStore, { DEVICE_KEY } from "stores/LocalStorageStore";
 /**
  * auth constants
  */
@@ -35,8 +34,7 @@ export const AuthReducer = (
     case AuthConstants.AUTH_LOGGEDIN_FALSE:
       return {
         ...state,
-        loggedIn: false,
-        user: undefined
+        loggedIn: false
       };
     // when there are errors in authentication, return the state
     // and errors payload in it
@@ -54,12 +52,10 @@ export const AuthReducer = (
         loading: true
       };
     case AuthConstants.LOGIN_SUCCESS:
-      const { user } = action.payload;
       return {
         ...state,
         loggedIn: true,
         loading: false,
-        user
       };
     case AuthConstants.LOGIN_FAILURE:
       if (action.error.status == 404) {
@@ -122,18 +118,15 @@ const AuthActions = {
           }
         },
         {
-          errorCallback: err => new Promise((resolve, _) => {
-            logError('auth err: ', err)
-            resolve(err)
-          }),
           successCallback: res =>
             new Promise((resolve, reject) => {
               const status = res.status;
               if (status == 200)
                 res.json().then(r => {
                   CookieStore.put(REFRESH_TOKEN, r.refresh_token);
+                  CookieStore.put(USER, r.user)
                   successCb();
-                  resolve({ user: { ...r.user, id: undefined } });
+                  resolve(r.user);
                 });
               else reject({ error: { status } });
             })
