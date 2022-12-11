@@ -32,7 +32,7 @@
     "csurf": "^1.10.0",
     "deepmerge": "^4.0.0",
     "dotenv": "^8.1.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.16.2",
     "extract-opts": "^3.3.1",
     "fg-loadcss": "^2.1.0",
